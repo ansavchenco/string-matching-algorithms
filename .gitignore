@@ -36,7 +36,7 @@
 ### CLion ###
 
 # User-specific stuff:
-/idea
+/.idea
 
 # CMake
 cmake-build-debug/
