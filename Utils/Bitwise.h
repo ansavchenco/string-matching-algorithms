@@ -15,6 +15,7 @@ public:
 
     static unsigned long power(unsigned long x, unsigned long n);
 
+    static uint64_t mod65535( uint64_t a );
 
 };
 

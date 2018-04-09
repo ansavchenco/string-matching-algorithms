@@ -30,7 +30,7 @@ public:
 
     explicit RabinKarp(std::string text, unsigned long q, unsigned long x);
 
-    std::vector<unsigned long> find(const std::string &pattern, unsigned long &collisionsCount);
+    std::vector<unsigned long> find(const std::string &pattern, unsigned long &collisionsCount, bool errorable = false);
 
     std::vector<unsigned long> find(const std::string &pattern) override;
 

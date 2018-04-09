@@ -49,7 +49,7 @@ void RabinKarp::recalculateHash(long &hash, unsigned long factor, unsigned long 
 }
 
 
-std::vector<unsigned long> RabinKarp::find(const std::string &pattern, unsigned long &collisionsCount) {
+std::vector<unsigned long> RabinKarp::find(const std::string &pattern, unsigned long &collisionsCount, bool errorable) {
 
     unsigned long n = text.length();
     unsigned long m = pattern.length();
@@ -64,20 +64,30 @@ std::vector<unsigned long> RabinKarp::find(const std::string &pattern, unsigned 
     collisionsCount = 0;
     for (unsigned long i = 0; i < n - m + 1; i++) {
         if (patternHash == windowHash) {
-            unsigned long k = 0;
-            bool match = false;
-            while (k < m && pattern[k] == text[i + k]) {
-                k++;
-                if (k == m) {
-                    hits.push_back(i);
-                    match = true;
+            if (!errorable) {
+                unsigned long k = 0;
+                bool match = false;
+                while (k < m && pattern[k] == text[i + k]) {
+                    k++;
+                    if (k == m) {
+                        hits.push_back(i);
+                        match = true;
+                    }
                 }
-            }
-            if (!match) {
-                collisionsCount++;
+                if (!match) {
+                    collisionsCount++;
+                }
+            } else {
+                hits.push_back(i);
             }
         }
-        recalculateHash(windowHash, factor, i + 1, text, m);
+
+        windowHash -= (long(text[i]) * factor) % q;
+        if (windowHash < 0) {
+            windowHash += q;
+        }
+        windowHash = ((windowHash + long(text[i + m])) * x) % q;
+
     }
     return hits;
 

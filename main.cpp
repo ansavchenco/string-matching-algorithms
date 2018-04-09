@@ -61,7 +61,7 @@ void test(vector<pair<string, string>> testFiles) {
         string p = FileUtils::readWhole("../Examples/" + it->second);
 
         KnuthMorrisPratt *kmp = new KnuthMorrisPratt(t);
-        RabinKarp rabinKarp = RabinKarp(t, 1000003, 2);
+        RabinKarp rabinKarp = RabinKarp(t, 72057594037928017, 9);
         ShiftAnd shiftAnd = ShiftAnd(t);
 
         auto start = chrono::high_resolution_clock::now();
@@ -71,9 +71,15 @@ void test(vector<pair<string, string>> testFiles) {
 
         unsigned long collisionsCount = 0;
         start = chrono::high_resolution_clock::now();
-        vector<unsigned long> rkHits = rabinKarp.find(p, collisionsCount);
+        vector<unsigned long> rkHits = rabinKarp.find(p, collisionsCount, false);
         end = chrono::high_resolution_clock::now();
         auto rkTime = chrono::duration_cast<chrono::nanoseconds>(end - start);
+
+//        collisionsCount = 0;
+//        start = chrono::high_resolution_clock::now();
+//        vector<unsigned long> rkeHits = rabinKarp.find(p, collisionsCount, true);
+//        end = chrono::high_resolution_clock::now();
+//        auto rkeTime = chrono::duration_cast<chrono::nanoseconds>(end - start);
 
         start = chrono::high_resolution_clock::now();
         vector<unsigned long> saHits = shiftAnd.find(p);
@@ -85,11 +91,13 @@ void test(vector<pair<string, string>> testFiles) {
         cout << "Pattern:         " << it->second << " (" << p.length() << ")" << endl;
         cout << "Occurrences:     " << endl;
         cout << "  K-M-P:         " << KMPHits.size() << endl;
-//        cout << "  Rabin-Karp:    " << rkHits.size() << " (collisions count: " << collisionsCount << ")" << endl;
+        cout << "  Rabin-Karp:    " << rkHits.size() << " (collisions count: " << collisionsCount << ")" << endl;
+//        cout << "  Rabin-Karp-er: " << rkeHits.size() << " (collisions count: " << collisionsCount << ")" << endl;
         cout << "  Shift-And:     " << saHits.size() << endl;
         cout << "Time:            " << endl;
         cout << "  K-M-P:         " << (double)KMPTime.count() / 1000000000 << endl;
-//        cout << "  Rabin-Karp:    " << (double)rkTime.count() / 1000000000 << endl;
+        cout << "  Rabin-Karp:    " << (double)rkTime.count() / 1000000000 << endl;
+//        cout << "  Rabin-Karp-er :" << (double)rkeTime.count() / 1000000000 << endl;
         cout << "  Shift-And:     " << (double)saTime.count() / 1000000000 << endl;
         cout << "=================================================================" << endl;
     }
@@ -110,6 +118,10 @@ vector<unsigned long> getMismatches(vector<unsigned long> hits1, vector<unsigned
 
 vector<pair<string, string>> tests = {
 
+
+//        {make_pair("rand100mln", "rand10mln")},
+
+//        {make_pair("dna10mln.txt", "dna10")},
         {make_pair("abc1mln", "abc5")},
         {make_pair("abc1mln", "abc10")},
         {make_pair("abc1mln", "abc20")},
@@ -126,6 +138,7 @@ vector<pair<string, string>> tests = {
 //        {make_pair("exm3", "pat4")},
 //        {make_pair("exm1", "exm1")},
 //        {make_pair("exm1", "pat1")},
+//        {make_pair("1mln(a).txt", "100thd(a).txt")},
 //        {make_pair("rand10mln", "rand1mln")},
 //        {make_pair("100mln(a).txt", "10mln(a).txt")},
 //        {make_pair("100mln(a).txt", "1mln(a).txt")},
@@ -145,8 +158,15 @@ vector<pair<string, string>> tests = {
 };
 
 
+unsigned long modulo(unsigned long x, unsigned long q) {
+    return x % q;
+}
+
 int main() {
     test(tests);
+
+//    unsigned long a = 65540;
+//    cout << Bitwise::mod65535(a);
 
 //    a = Bitwise::power(10);
 //    getchar();
@@ -157,22 +177,25 @@ int main() {
 //    cout << (x << (29 - 1)) << endl;
 //    cout << x;
 
+
+
 //    auto start = chrono::high_resolution_clock::now();
-//    100000000 << 1;
+//    modulo(65540, 65535);
 //    auto end = chrono::high_resolution_clock::now();
 //    auto bitTime = chrono::duration_cast<chrono::nanoseconds>(end - start);
 //
 //    start = chrono::high_resolution_clock::now();
-//    100000000 * 2;
+//    Bitwise::mod65535(65540);
 //    end = chrono::high_resolution_clock::now();
 //    auto stdTime = chrono::duration_cast<chrono::nanoseconds>(end - start);
-//
+////
 //    cout << "tests:" << endl;
 //    cout << "stdTime: " << stdTime.count() << endl;
 //    cout << "bitTime: " << bitTime.count() << endl;
 
 
 //    unsigned long maximum 18446744073709551615
+//    unsigned long maximum 2305843009213693951
 
 //    2 powers of n:
 //     stdTime: 9603
@@ -190,7 +213,10 @@ int main() {
 //        cout << thebit;
 //    }
 
-//    FileUtils::random("rand10mln", 10000000);
+
+
+
+//    FileUtils::random("rand100mln", 100000000);
 //    FileUtils::random("rand1mln", 1000000);
 //    FileUtils::random("abc10mln", 10000000, "abc");
 //    FileUtils::random("abc100mln", 100000000, "abc");
@@ -217,5 +243,9 @@ int main() {
 
 //    BoyerMoore bm = BoyerMoore(t);
 //    display(bm.find(p), t, p.length());
+
+//    ShiftAnd sa = ShiftAnd(t);
+//    display(sa.find(p), t, p.length());
+
 
 }

@@ -26,7 +26,7 @@ std::vector<unsigned long> ShiftAnd::find(const std::string &pattern) {
     for (unsigned long i = 0; i < n; i++) {
         M = (M >> 1 | mostSignificantBit) & charBitMaps[text[i]];
         if (M & 1) {
-            hits.push_back(i - m - 1);
+            hits.push_back(i - m + 1);
         }
     }
     return hits;
